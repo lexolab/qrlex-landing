@@ -194,7 +194,7 @@
           <a href="#generator">Live app</a>
           <a href="#features">Features</a>
           <a href="#preview">Preview</a>
-          <a href="#download">Download</a>
+          <a href="#download">Online</a>
         </div>
       </div>
 
@@ -207,7 +207,7 @@
           </p>
           <div class="actions">
             <a class="btn btn-primary" href="#generator">Use it now</a>
-            <a class="btn btn-secondary" href="https://github.com/lexolab/qrlex-landing/releases" target="_blank">Download for macOS</a>
+            <a class="btn btn-secondary" href="#features">See features</a>
           </div>
           <div class="mini-stats">
             <div class="mini-stat"><strong>5</strong><span>smart QR modes: text, URL, Wi‑Fi, email, phone.</span></div>
@@ -273,6 +273,26 @@
               <small>Warm premium</small>
               <div class="swatches"><span class="swatch" style="background:#9a3412"></span><span class="swatch" style="background:#fff7ed"></span></div>
             </button>
+            <button class="template" data-template="emerald">
+              <strong>Emerald</strong>
+              <small>Rich green</small>
+              <div class="swatches"><span class="swatch" style="background:#065f46"></span><span class="swatch" style="background:#ecfdf5"></span></div>
+            </button>
+            <button class="template" data-template="rose">
+              <strong>Rose</strong>
+              <small>Luxury pink</small>
+              <div class="swatches"><span class="swatch" style="background:#9f1239"></span><span class="swatch" style="background:#fff1f2"></span></div>
+            </button>
+            <button class="template" data-template="gold">
+              <strong>Gold</strong>
+              <small>Elegant classic</small>
+              <div class="swatches"><span class="swatch" style="background:#a16207"></span><span class="swatch" style="background:#fffbeb"></span></div>
+            </button>
+            <button class="template" data-template="slate">
+              <strong>Slate</strong>
+              <small>Minimal neutral</small>
+              <div class="swatches"><span class="swatch" style="background:#334155"></span><span class="swatch" style="background:#f8fafc"></span></div>
+            </button>
           </div>
 
           <div style="height:18px"></div>
@@ -308,8 +328,8 @@
           </div>
 
           <div class="inline-actions" style="margin-top:18px;">
-            <button id="downloadPng" class="btn btn-primary">Download PNG</button>
-            <button id="downloadSvg" class="btn btn-secondary">Download SVG</button>
+            <button id="copyPayload" class="btn btn-secondary">Copy content</button>
+            <button id="shareLink" class="btn btn-primary">Copy share link</button>
           </div>
         </div>
 
@@ -396,14 +416,14 @@
   <section class="cta" id="download">
     <div class="wrap">
       <div class="cta-box glass">
-        <div class="kicker">Download</div>
-        <h2>Want the desktop build too?</h2>
-        <p class="section-copy" style="max-width: 760px; margin: 0 auto 22px;">Use the web app instantly, or grab the macOS build for the full desktop experience.</p>
+        <div class="kicker">Online app</div>
+        <h2>Built to use directly in the browser.</h2>
+        <p class="section-copy" style="max-width: 760px; margin: 0 auto 22px;">No install, no download, no signup. Just open the page, generate your QR, customize colors, and share it instantly.</p>
         <div class="actions" style="justify-content:center; margin-bottom: 0;">
-          <a class="btn btn-primary" href="https://github.com/lexolab/qrlex-landing/releases" target="_blank">Download macOS ZIP</a>
-          <a class="btn btn-secondary" href="#generator">Open live generator</a>
+          <a class="btn btn-primary" href="#generator">Open live generator</a>
+          <a class="btn btn-secondary" href="#features">Explore features</a>
         </div>
-        <div class="download-note">Live on the landing page · Free to use · No signup</div>
+        <div class="download-note">100% online · Free to use · Instant shareable links</div>
       </div>
     </div>
   </section>
@@ -423,8 +443,6 @@
     const lightColor = document.getElementById('lightColor');
     const sizeInput = document.getElementById('size');
     const marginInput = document.getElementById('margin');
-    const downloadPng = document.getElementById('downloadPng');
-    const downloadSvg = document.getElementById('downloadSvg');
     const copyPayload = document.getElementById('copyPayload');
     const shareLink = document.getElementById('shareLink');
     const clearHistory = document.getElementById('clearHistory');
@@ -438,7 +456,11 @@
       midnight: { dark: '#111827', light: '#f8fafc' },
       royal: { dark: '#5b21b6', light: '#f5f3ff' },
       aqua: { dark: '#0f766e', light: '#ecfeff' },
-      sunset: { dark: '#9a3412', light: '#fff7ed' }
+      sunset: { dark: '#9a3412', light: '#fff7ed' },
+      emerald: { dark: '#065f46', light: '#ecfdf5' },
+      rose: { dark: '#9f1239', light: '#fff1f2' },
+      gold: { dark: '#a16207', light: '#fffbeb' },
+      slate: { dark: '#334155', light: '#f8fafc' }
     };
 
     const schemas = {
@@ -566,13 +588,6 @@
       updateShareHash();
     }
 
-    function downloadFile(dataUrl, filename) {
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = filename;
-      a.click();
-    }
-
     function saveToHistory() {
       const state = getState();
       const payload = getPayload().trim();
@@ -640,21 +655,6 @@
 
     [darkColor, lightColor, sizeInput, marginInput].forEach(el => el.addEventListener('input', updateQR));
 
-    downloadPng.addEventListener('click', () => {
-      saveToHistory();
-      downloadFile(canvas.toDataURL('image/png'), `qrlex-${currentType}.png`);
-    });
-
-    downloadSvg.addEventListener('click', async () => {
-      saveToHistory();
-      const svg = await QRCode.toString(getPayload() || ' ', {
-        type: 'svg',
-        margin: Number(marginInput.value),
-        color: { dark: darkColor.value, light: lightColor.value }
-      });
-      const blob = new Blob([svg], { type: 'image/svg+xml' });
-      downloadFile(URL.createObjectURL(blob), `qrlex-${currentType}.svg`);
-    });
 
     copyPayload.addEventListener('click', async () => {
       await navigator.clipboard.writeText(getPayload());
