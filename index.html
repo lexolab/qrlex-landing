@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>qrlex — Elegant QR Generator Online</title>
-  <meta name="description" content="qrlex is a premium QR generator with live preview, beautiful styling, and instant PNG/SVG export right from the browser." />
+  <meta name="description" content="qrlex is a premium QR generator with live preview, beautiful styling, shareable links, templates, and instant PNG/SVG export right from the browser." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -34,7 +34,7 @@
       line-height: 1.55;
     }
     a { color: inherit; }
-    .wrap { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .wrap { width: min(1240px, calc(100% - 32px)); margin: 0 auto; }
     .glass {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -63,11 +63,12 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent;
     }
     .lead { color: var(--muted); font-size: 1.08rem; max-width: 640px; margin-bottom: 28px; }
-    .actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 30px; }
+    .actions, .inline-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .actions { margin-bottom: 30px; }
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;
       border-radius: 16px; padding: 15px 24px; font-weight: 800; transition: .2s ease; border: 1px solid transparent;
-      cursor: pointer;
+      cursor: pointer; font: inherit;
     }
     .btn:hover { transform: translateY(-2px); }
     .btn-primary { color: #08111f; background: linear-gradient(135deg, #67e8f9, #a78bfa); box-shadow: 0 18px 40px rgba(103,232,249,.22); }
@@ -92,7 +93,7 @@
     .section-head { text-align: center; max-width: 760px; margin: 0 auto 28px; }
     .kicker { color: var(--mint); text-transform: uppercase; letter-spacing: .16em; font-weight: 800; font-size: .76rem; margin-bottom: 10px; }
     h2 { margin: 0 0 12px; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.02; letter-spacing: -.04em; }
-    .section-copy { color: var(--muted); font-size: 1.04rem; }
+    .section-copy, .muted { color: var(--muted); font-size: 1.04rem; }
     .feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
     .feature { border-radius: 26px; padding: 24px; }
     .feature-icon {
@@ -101,15 +102,24 @@
     }
     .feature h3 { margin: 0 0 10px; font-size: 1.2rem; }
     .feature p, .list-item span, .helper, .muted { margin: 0; color: var(--muted); }
-    .app-grid { display: grid; grid-template-columns: 430px 1fr; gap: 20px; align-items: stretch; }
+    .app-grid { display: grid; grid-template-columns: 430px 1fr 320px; gap: 20px; align-items: stretch; }
     .panel, .app-panel, .preview-panel, .showcase-card, .cta-box { border-radius: 28px; padding: 24px; }
     .field-grid { display: grid; gap: 14px; }
-    .type-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+    .type-row, .template-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
     .chip {
       border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); color: var(--text);
       padding: 10px 14px; border-radius: 999px; cursor: pointer; transition: .2s ease; font: inherit; font-weight: 700;
     }
     .chip.active, .chip:hover { background: linear-gradient(135deg, rgba(124,58,237,.35), rgba(6,182,212,.22)); border-color: rgba(255,255,255,.18); }
+    .template {
+      padding: 12px 14px; border-radius: 18px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.04);
+      cursor: pointer; transition: .2s ease;
+    }
+    .template.active, .template:hover { transform: translateY(-2px); border-color: rgba(255,255,255,.18); }
+    .template strong { display: block; font-size: .95rem; }
+    .template small { color: var(--muted); }
+    .swatches { display: flex; gap: 6px; margin-top: 10px; }
+    .swatch { width: 18px; height: 18px; border-radius: 50%; border: 1px solid rgba(255,255,255,.18); }
     label { display: grid; gap: 8px; }
     label span { color: var(--muted); font-size: .92rem; }
     input, textarea, select {
@@ -124,10 +134,27 @@
       background: radial-gradient(circle at top, rgba(255,255,255,.05), transparent 38%), linear-gradient(160deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
       border: 1px solid rgba(255,255,255,.06); padding: 24px;
     }
-    .qr-frame { background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(244,247,255,.98)); padding: 28px; border-radius: 28px; box-shadow: 0 28px 80px rgba(0,0,0,.24); }
+    .qr-frame { position: relative; background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(244,247,255,.98)); padding: 28px; border-radius: 28px; box-shadow: 0 28px 80px rgba(0,0,0,.24); }
     #qrCanvas { width: min(380px, 100%); height: auto; display: block; }
-    .payload-box { margin-top: 18px; min-height: 76px; white-space: pre-wrap; color: #dbe4ff; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); padding: 16px; border-radius: 18px; }
-    .inline-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+    .qr-logo {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      width: 72px; height: 72px; border-radius: 22px; padding: 10px;
+      background: rgba(255,255,255,.97); box-shadow: 0 8px 30px rgba(0,0,0,.12); display: none;
+    }
+    .qr-logo.visible { display: block; }
+    .payload-box { margin-top: 18px; min-height: 76px; white-space: pre-wrap; color: #dbe4ff; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); padding: 16px; border-radius: 18px; word-break: break-word; }
+    .history-list { display: grid; gap: 12px; margin-top: 14px; }
+    .history-item {
+      padding: 14px 16px; border-radius: 18px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); cursor: pointer;
+      text-align: left;
+    }
+    .history-item strong { display: block; margin-bottom: 4px; }
+    .history-item small { color: var(--muted); display: block; }
+    .history-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .tiny-btn {
+      border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); color: var(--text);
+      padding: 8px 12px; border-radius: 12px; cursor: pointer; font: inherit; font-size: .88rem;
+    }
     .showcase { display: grid; grid-template-columns: 1.1fr .9fr; gap: 20px; align-items: stretch; margin-top: 10px; }
     .showcase-card img { width: 100%; display: block; border-radius: 20px; }
     .list { display: grid; gap: 14px; }
@@ -137,6 +164,10 @@
     .cta-box { text-align: center; }
     .download-note { color: var(--muted); margin-top: 14px; font-size: .94rem; }
     .footer { padding: 0 0 36px; text-align: center; color: var(--muted); font-size: .92rem; }
+    @media (max-width: 1140px) {
+      .app-grid { grid-template-columns: 1fr 1fr; }
+      .history-panel { grid-column: 1 / -1; }
+    }
     @media (max-width: 980px) {
       .hero { min-height: auto; }
       .hero-grid, .showcase, .feature-grid, .app-grid, .mini-stats { grid-template-columns: 1fr; }
@@ -172,7 +203,7 @@
           <div class="eyebrow">Now usable online</div>
           <h1>Create <span class="grad">beautiful QR codes</span> in seconds.</h1>
           <p class="lead">
-            qrlex is now more than a landing page. The generator runs directly in the browser with live preview, custom styling, and instant PNG or SVG export.
+            qrlex is now a real online app: live preview, premium templates, logo in the center, shareable links, history, and instant PNG or SVG export.
           </p>
           <div class="actions">
             <a class="btn btn-primary" href="#generator">Use it now</a>
@@ -180,8 +211,8 @@
           </div>
           <div class="mini-stats">
             <div class="mini-stat"><strong>5</strong><span>smart QR modes: text, URL, Wi‑Fi, email, phone.</span></div>
-            <div class="mini-stat"><strong>PNG + SVG</strong><span>high-quality exports ready for print or digital.</span></div>
-            <div class="mini-stat"><strong>Online</strong><span>works instantly inside the landing page.</span></div>
+            <div class="mini-stat"><strong>Templates</strong><span>premium color presets for cleaner branding.</span></div>
+            <div class="mini-stat"><strong>Shareable</strong><span>copy a live link with your exact QR config.</span></div>
           </div>
         </div>
 
@@ -203,7 +234,7 @@
       <div class="section-head">
         <div class="kicker">Live generator</div>
         <h2>Run the app directly on the page.</h2>
-        <p class="section-copy">Type, style, preview, and export your QR without installing anything.</p>
+        <p class="section-copy">Type, style, preview, share, save, and export your QR without installing anything.</p>
       </div>
 
       <div class="app-grid">
@@ -218,6 +249,31 @@
           </div>
 
           <div class="field-grid" id="dynamicFields"></div>
+
+          <div style="height:18px"></div>
+          <div class="kicker">Premium templates</div>
+          <div class="template-row" id="templateRow">
+            <button class="template active" data-template="midnight">
+              <strong>Midnight</strong>
+              <small>Dark + clean</small>
+              <div class="swatches"><span class="swatch" style="background:#111827"></span><span class="swatch" style="background:#f8fafc"></span></div>
+            </button>
+            <button class="template" data-template="royal">
+              <strong>Royal</strong>
+              <small>Violet pop</small>
+              <div class="swatches"><span class="swatch" style="background:#5b21b6"></span><span class="swatch" style="background:#f5f3ff"></span></div>
+            </button>
+            <button class="template" data-template="aqua">
+              <strong>Aqua</strong>
+              <small>Fresh + modern</small>
+              <div class="swatches"><span class="swatch" style="background:#0f766e"></span><span class="swatch" style="background:#ecfeff"></span></div>
+            </button>
+            <button class="template" data-template="sunset">
+              <strong>Sunset</strong>
+              <small>Warm premium</small>
+              <div class="swatches"><span class="swatch" style="background:#9a3412"></span><span class="swatch" style="background:#fff7ed"></span></div>
+            </button>
+          </div>
 
           <div style="height:18px"></div>
           <div class="kicker">Style</div>
@@ -251,7 +307,7 @@
             </label>
           </div>
 
-          <div class="inline-actions">
+          <div class="inline-actions" style="margin-top:18px;">
             <button id="downloadPng" class="btn btn-primary">Download PNG</button>
             <button id="downloadSvg" class="btn btn-secondary">Download SVG</button>
           </div>
@@ -262,12 +318,26 @@
           <div class="preview-stage">
             <div class="qr-frame">
               <canvas id="qrCanvas" width="320" height="320"></canvas>
+              <img id="qrLogo" class="qr-logo visible" src="icon.png" alt="qrlex logo" />
             </div>
           </div>
           <div class="payload-box" id="payloadView"></div>
-          <div class="inline-actions">
+          <div class="inline-actions" style="margin-top:18px;">
             <button id="copyPayload" class="btn btn-secondary">Copy content</button>
+            <button id="shareLink" class="btn btn-secondary">Copy share link</button>
           </div>
+        </div>
+
+        <div class="panel glass history-panel">
+          <div class="history-top">
+            <div>
+              <div class="kicker">History</div>
+              <strong>Recent QRs</strong>
+            </div>
+            <button id="clearHistory" class="tiny-btn">Clear</button>
+          </div>
+          <p class="muted" style="font-size:.95rem; margin-top:10px;">Your last QR setups are saved locally in this browser.</p>
+          <div class="history-list" id="historyList"></div>
         </div>
       </div>
     </div>
@@ -289,13 +359,13 @@
         </div>
         <div class="feature glass">
           <div class="feature-icon">🎨</div>
-          <h3>Custom styling</h3>
-          <p>Pick foreground and background colors, control size, and fine-tune margin for brand consistency.</p>
+          <h3>Premium templates</h3>
+          <p>Use polished presets, then fine-tune colors, size, and margin for a branded result.</p>
         </div>
         <div class="feature glass">
-          <div class="feature-icon">🧾</div>
-          <h3>Useful formats</h3>
-          <p>Export crisp PNG files or scalable SVG assets for presentations, print, web, and packaging.</p>
+          <div class="feature-icon">🔗</div>
+          <h3>Shareable states</h3>
+          <p>Copy a direct link that opens the exact same QR content and style on another device.</p>
         </div>
       </div>
     </div>
@@ -342,7 +412,10 @@
 
   <script src="qrcode.min.js"></script>
   <script>
+    const HISTORY_KEY = 'qrlex-history-v2';
+    const MAX_HISTORY = 8;
     const typeChips = document.querySelectorAll('#typeChips .chip');
+    const templateButtons = document.querySelectorAll('#templateRow .template');
     const dynamicFields = document.getElementById('dynamicFields');
     const canvas = document.getElementById('qrCanvas');
     const payloadView = document.getElementById('payloadView');
@@ -353,8 +426,20 @@
     const downloadPng = document.getElementById('downloadPng');
     const downloadSvg = document.getElementById('downloadSvg');
     const copyPayload = document.getElementById('copyPayload');
+    const shareLink = document.getElementById('shareLink');
+    const clearHistory = document.getElementById('clearHistory');
+    const historyList = document.getElementById('historyList');
+    const qrLogo = document.getElementById('qrLogo');
 
     let currentType = 'text';
+    let currentTemplate = 'midnight';
+
+    const templates = {
+      midnight: { dark: '#111827', light: '#f8fafc' },
+      royal: { dark: '#5b21b6', light: '#f5f3ff' },
+      aqua: { dark: '#0f766e', light: '#ecfeff' },
+      sunset: { dark: '#9a3412', light: '#fff7ed' }
+    };
 
     const schemas = {
       text: [{ id: 'text', label: 'Text', tag: 'textarea', placeholder: 'Write the content for your QR...' }],
@@ -372,7 +457,7 @@
       phone: [{ id: 'phone', label: 'Phone', tag: 'input', placeholder: '+1 202 555 0118' }]
     };
 
-    function renderFields() {
+    function renderFields(values = {}) {
       dynamicFields.innerHTML = '';
       schemas[currentType].forEach(field => {
         const label = document.createElement('label');
@@ -382,6 +467,7 @@
         input.id = field.id;
         input.placeholder = field.placeholder;
         if (field.tag === 'input') input.type = 'text';
+        input.value = values[field.id] ?? '';
         input.addEventListener('input', updateQR);
         label.append(span, input);
         dynamicFields.appendChild(label);
@@ -408,6 +494,12 @@
       return document.getElementById(id)?.value?.trim() || '';
     }
 
+    function getFieldsObject() {
+      const result = {};
+      schemas[currentType].forEach(field => result[field.id] = getValue(field.id));
+      return result;
+    }
+
     function getPayload() {
       switch (currentType) {
         case 'url': return getValue('url');
@@ -416,6 +508,47 @@
         case 'phone': return `tel:${getValue('phone')}`;
         default: return getValue('text');
       }
+    }
+
+    function getState() {
+      return {
+        type: currentType,
+        template: currentTemplate,
+        dark: darkColor.value,
+        light: lightColor.value,
+        size: sizeInput.value,
+        margin: marginInput.value,
+        fields: getFieldsObject()
+      };
+    }
+
+    function encodeState(state) {
+      return btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+    }
+
+    function decodeState(value) {
+      try {
+        return JSON.parse(decodeURIComponent(escape(atob(value))));
+      } catch {
+        return null;
+      }
+    }
+
+    function syncActiveChip() {
+      typeChips.forEach(chip => chip.classList.toggle('active', chip.dataset.type === currentType));
+    }
+
+    function syncActiveTemplate() {
+      templateButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.template === currentTemplate));
+    }
+
+    function applyTemplate(name, rerender = true) {
+      currentTemplate = name;
+      const tpl = templates[name];
+      darkColor.value = tpl.dark;
+      lightColor.value = tpl.light;
+      syncActiveTemplate();
+      if (rerender) updateQR();
     }
 
     async function updateQR() {
@@ -429,10 +562,8 @@
         color: { dark: darkColor.value, light: lightColor.value }
       });
       payloadView.textContent = payload.trim() || 'Write something to generate your QR';
-    }
-
-    function syncActiveChip() {
-      typeChips.forEach(chip => chip.classList.toggle('active', chip.dataset.type === currentType));
+      qrLogo.classList.add('visible');
+      updateShareHash();
     }
 
     function downloadFile(dataUrl, filename) {
@@ -442,19 +573,80 @@
       a.click();
     }
 
+    function saveToHistory() {
+      const state = getState();
+      const payload = getPayload().trim();
+      if (!payload) return;
+      const existing = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      const next = [{
+        state,
+        payload,
+        ts: new Date().toISOString()
+      }, ...existing.filter(item => item.payload !== payload)].slice(0, MAX_HISTORY);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const items = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      historyList.innerHTML = '';
+      if (!items.length) {
+        historyList.innerHTML = '<div class="history-item"><strong>No recent QRs yet</strong><small>Your last generated codes will appear here.</small></div>';
+        return;
+      }
+      items.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'history-item';
+        btn.innerHTML = `<strong>${item.state.type.toUpperCase()} · ${item.state.template}</strong><small>${item.payload.slice(0, 110)}</small>`;
+        btn.addEventListener('click', () => loadState(item.state));
+        historyList.appendChild(btn);
+      });
+    }
+
+    function loadState(state) {
+      if (!state || !schemas[state.type]) return;
+      currentType = state.type;
+      syncActiveChip();
+      sizeInput.value = state.size || '320';
+      marginInput.value = state.margin || '2';
+      applyTemplate(state.template || 'midnight', false);
+      darkColor.value = state.dark || templates[currentTemplate].dark;
+      lightColor.value = state.light || templates[currentTemplate].light;
+      renderFields(state.fields || {});
+    }
+
+    function updateShareHash() {
+      const encoded = encodeState(getState());
+      history.replaceState(null, '', `${location.pathname}#qr=${encoded}`);
+    }
+
+    function loadFromHash() {
+      const hash = location.hash || '';
+      const match = hash.match(/qr=([^&]+)/);
+      if (!match) return false;
+      const state = decodeState(match[1]);
+      if (!state) return false;
+      loadState(state);
+      return true;
+    }
+
     typeChips.forEach(chip => chip.addEventListener('click', () => {
       currentType = chip.dataset.type;
       syncActiveChip();
       renderFields();
     }));
 
+    templateButtons.forEach(btn => btn.addEventListener('click', () => applyTemplate(btn.dataset.template)));
+
     [darkColor, lightColor, sizeInput, marginInput].forEach(el => el.addEventListener('input', updateQR));
 
     downloadPng.addEventListener('click', () => {
+      saveToHistory();
       downloadFile(canvas.toDataURL('image/png'), `qrlex-${currentType}.png`);
     });
 
     downloadSvg.addEventListener('click', async () => {
+      saveToHistory();
       const svg = await QRCode.toString(getPayload() || ' ', {
         type: 'svg',
         margin: Number(marginInput.value),
@@ -470,7 +662,24 @@
       setTimeout(() => copyPayload.textContent = 'Copy content', 1200);
     });
 
-    renderFields();
+    shareLink.addEventListener('click', async () => {
+      saveToHistory();
+      updateShareHash();
+      await navigator.clipboard.writeText(location.href);
+      shareLink.textContent = 'Link copied';
+      setTimeout(() => shareLink.textContent = 'Copy share link', 1200);
+    });
+
+    clearHistory.addEventListener('click', () => {
+      localStorage.removeItem(HISTORY_KEY);
+      renderHistory();
+    });
+
+    if (!loadFromHash()) {
+      applyTemplate('midnight', false);
+      renderFields();
+    }
+    renderHistory();
   </script>
 </body>
 </html>
