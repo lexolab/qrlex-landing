@@ -252,48 +252,18 @@
 
           <div style="height:18px"></div>
           <div class="kicker">Premium templates</div>
-          <div class="template-row" id="templateRow">
-            <button class="template active" data-template="midnight">
-              <strong>Midnight</strong>
-              <small>Dark + clean</small>
-              <div class="swatches"><span class="swatch" style="background:#111827"></span><span class="swatch" style="background:#f8fafc"></span></div>
-            </button>
-            <button class="template" data-template="royal">
-              <strong>Royal</strong>
-              <small>Violet pop</small>
-              <div class="swatches"><span class="swatch" style="background:#5b21b6"></span><span class="swatch" style="background:#f5f3ff"></span></div>
-            </button>
-            <button class="template" data-template="aqua">
-              <strong>Aqua</strong>
-              <small>Fresh + modern</small>
-              <div class="swatches"><span class="swatch" style="background:#0f766e"></span><span class="swatch" style="background:#ecfeff"></span></div>
-            </button>
-            <button class="template" data-template="sunset">
-              <strong>Sunset</strong>
-              <small>Warm premium</small>
-              <div class="swatches"><span class="swatch" style="background:#9a3412"></span><span class="swatch" style="background:#fff7ed"></span></div>
-            </button>
-            <button class="template" data-template="emerald">
-              <strong>Emerald</strong>
-              <small>Rich green</small>
-              <div class="swatches"><span class="swatch" style="background:#065f46"></span><span class="swatch" style="background:#ecfdf5"></span></div>
-            </button>
-            <button class="template" data-template="rose">
-              <strong>Rose</strong>
-              <small>Luxury pink</small>
-              <div class="swatches"><span class="swatch" style="background:#9f1239"></span><span class="swatch" style="background:#fff1f2"></span></div>
-            </button>
-            <button class="template" data-template="gold">
-              <strong>Gold</strong>
-              <small>Elegant classic</small>
-              <div class="swatches"><span class="swatch" style="background:#a16207"></span><span class="swatch" style="background:#fffbeb"></span></div>
-            </button>
-            <button class="template" data-template="slate">
-              <strong>Slate</strong>
-              <small>Minimal neutral</small>
-              <div class="swatches"><span class="swatch" style="background:#334155"></span><span class="swatch" style="background:#f8fafc"></span></div>
-            </button>
-          </div>
+          <label style="margin-bottom:14px; display:block;">
+            <span>Palette category</span>
+            <select id="templateCategory">
+              <option value="all">All palettes</option>
+              <option value="business">Business</option>
+              <option value="luxury">Luxury</option>
+              <option value="neon">Neon</option>
+              <option value="pastel">Pastel</option>
+              <option value="nature">Nature</option>
+            </select>
+          </label>
+          <div class="template-row" id="templateRow"></div>
 
           <div style="height:18px"></div>
           <div class="kicker">Style</div>
@@ -435,7 +405,8 @@
     const HISTORY_KEY = 'qrlex-history-v2';
     const MAX_HISTORY = 8;
     const typeChips = document.querySelectorAll('#typeChips .chip');
-    const templateButtons = document.querySelectorAll('#templateRow .template');
+    const templateRow = document.getElementById('templateRow');
+    const templateCategory = document.getElementById('templateCategory');
     const dynamicFields = document.getElementById('dynamicFields');
     const canvas = document.getElementById('qrCanvas');
     const payloadView = document.getElementById('payloadView');
@@ -453,14 +424,21 @@
     let currentTemplate = 'midnight';
 
     const templates = {
-      midnight: { dark: '#111827', light: '#f8fafc' },
-      royal: { dark: '#5b21b6', light: '#f5f3ff' },
-      aqua: { dark: '#0f766e', light: '#ecfeff' },
-      sunset: { dark: '#9a3412', light: '#fff7ed' },
-      emerald: { dark: '#065f46', light: '#ecfdf5' },
-      rose: { dark: '#9f1239', light: '#fff1f2' },
-      gold: { dark: '#a16207', light: '#fffbeb' },
-      slate: { dark: '#334155', light: '#f8fafc' }
+      midnight: { dark: '#111827', light: '#f8fafc', category: 'business', label: 'Midnight', desc: 'Dark + clean' },
+      slate: { dark: '#334155', light: '#f8fafc', category: 'business', label: 'Slate', desc: 'Minimal neutral' },
+      royal: { dark: '#5b21b6', light: '#f5f3ff', category: 'luxury', label: 'Royal', desc: 'Violet pop' },
+      gold: { dark: '#a16207', light: '#fffbeb', category: 'luxury', label: 'Gold', desc: 'Elegant classic' },
+      rose: { dark: '#9f1239', light: '#fff1f2', category: 'luxury', label: 'Rose', desc: 'Luxury pink' },
+      aqua: { dark: '#0f766e', light: '#ecfeff', category: 'nature', label: 'Aqua', desc: 'Fresh + modern' },
+      emerald: { dark: '#065f46', light: '#ecfdf5', category: 'nature', label: 'Emerald', desc: 'Rich green' },
+      sunset: { dark: '#9a3412', light: '#fff7ed', category: 'luxury', label: 'Sunset', desc: 'Warm premium' },
+      neonlime: { dark: '#3f6212', light: '#f7fee7', category: 'neon', label: 'Neon Lime', desc: 'Bold electric' },
+      neonpink: { dark: '#be185d', light: '#fdf2f8', category: 'neon', label: 'Neon Pink', desc: 'Bright statement' },
+      cyberblue: { dark: '#1d4ed8', light: '#eff6ff', category: 'neon', label: 'Cyber Blue', desc: 'Tech energy' },
+      lavender: { dark: '#7c3aed', light: '#faf5ff', category: 'pastel', label: 'Lavender', desc: 'Soft violet' },
+      peach: { dark: '#c2410c', light: '#fff7ed', category: 'pastel', label: 'Peach', desc: 'Warm soft' },
+      sky: { dark: '#0369a1', light: '#f0f9ff', category: 'pastel', label: 'Sky', desc: 'Clean airy' },
+      forest: { dark: '#166534', light: '#f0fdf4', category: 'nature', label: 'Forest', desc: 'Organic calm' }
     };
 
     const schemas = {
@@ -560,8 +538,23 @@
       typeChips.forEach(chip => chip.classList.toggle('active', chip.dataset.type === currentType));
     }
 
+    function renderTemplates() {
+      const category = templateCategory.value;
+      const entries = Object.entries(templates).filter(([, tpl]) => category === 'all' || tpl.category === category);
+      templateRow.innerHTML = entries.map(([key, tpl]) => `
+        <button class="template ${key === currentTemplate ? 'active' : ''}" data-template="${key}">
+          <strong>${tpl.label}</strong>
+          <small>${tpl.desc}</small>
+          <div class="swatches"><span class="swatch" style="background:${tpl.dark}"></span><span class="swatch" style="background:${tpl.light}"></span></div>
+        </button>
+      `).join('');
+      templateRow.querySelectorAll('.template').forEach(btn => {
+        btn.addEventListener('click', () => applyTemplate(btn.dataset.template));
+      });
+    }
+
     function syncActiveTemplate() {
-      templateButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.template === currentTemplate));
+      templateRow.querySelectorAll('.template').forEach(btn => btn.classList.toggle('active', btn.dataset.template === currentTemplate));
     }
 
     function applyTemplate(name, rerender = true) {
@@ -651,7 +644,7 @@
       renderFields();
     }));
 
-    templateButtons.forEach(btn => btn.addEventListener('click', () => applyTemplate(btn.dataset.template)));
+    templateCategory.addEventListener('change', renderTemplates);
 
     [darkColor, lightColor, sizeInput, marginInput].forEach(el => el.addEventListener('input', updateQR));
 
@@ -677,8 +670,10 @@
 
     if (!loadFromHash()) {
       applyTemplate('midnight', false);
+      renderTemplates();
       renderFields();
     }
+    renderTemplates();
     renderHistory();
   </script>
 </body>
