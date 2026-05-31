@@ -438,6 +438,7 @@
           </div>
           <div class="payload-box" id="payloadView"></div>
           <div class="inline-actions" style="margin-top:18px;">
+            <button id="downloadQR" class="btn btn-primary">Download QR</button>
             <button id="copyPayload" class="btn btn-secondary">Copy content</button>
             <button id="shareLink" class="btn btn-secondary">Copy share link</button>
           </div>
@@ -559,6 +560,7 @@
     const marginInput = document.getElementById('margin');
     const copyPayload = document.getElementById('copyPayload');
     const shareLink = document.getElementById('shareLink');
+    const downloadQR = document.getElementById('downloadQR');
     const clearHistory = document.getElementById('clearHistory');
     const historyList = document.getElementById('historyList');
     const qrLogo = document.getElementById('qrLogo');
@@ -804,6 +806,16 @@
       await navigator.clipboard.writeText(location.href);
       shareLink.textContent = 'Link copied';
       setTimeout(() => shareLink.textContent = 'Copy share link', 1200);
+    });
+
+    downloadQR.addEventListener('click', () => {
+      saveToHistory();
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = `qrlex-${currentType}-qr.png`;
+      link.click();
+      downloadQR.textContent = 'Downloaded';
+      setTimeout(() => downloadQR.textContent = 'Download QR', 1200);
     });
 
     clearHistory.addEventListener('click', () => {
